@@ -108,6 +108,8 @@ public static class OuyaInput
 			case RuntimePlatform.WindowsEditor: platform = Platform.Windows; break;
 			case RuntimePlatform.Android: platform = Platform.Android; break;
 			case RuntimePlatform.IPhonePlayer: platform = Platform.iOS; break;
+		    case RuntimePlatform.WindowsWebPlayer: platform = Platform.Windows; break;
+		    case RuntimePlatform.OSXWebPlayer: platform = Platform.MacOS; break;
 		}
 		// create an array of classes caching input mapping strings
 		playerControllers = new PlayerController[playersMax];
@@ -245,7 +247,7 @@ public static class OuyaInput
 			// we check if the controller we have need range mapping
 			switch (mapType)
 			{
-#if !UNITY_EDITOR && UNITY_ANDROID
+#if !UNITY_EDITOR && ( UNITY_ANDROID || UNITY_WEBPLAYER )
 				case OuyaMapType.Generic_ANDROID:
 				case OuyaMapType.Broadcom_ANDROID:
 				// remap values from range -1to1 onto range 0to1
@@ -264,7 +266,7 @@ public static class OuyaInput
 				}		
 #endif
 
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
 				case OuyaMapType.Ouya_WIN:
 				// remap values from range -1to1 onto range 0to1
 				switch (triggerAxis) {
@@ -282,7 +284,7 @@ public static class OuyaInput
 				}
 #endif
 
-#if UNITY_EDITOR || UNITY_STANDALONE_OSX
+#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_WEBPLAYER
 				case OuyaMapType.TattieBogle_OSX:
 				// remap values from range -1to1 onto range 0to1
 				switch (triggerAxis) {
@@ -680,7 +682,7 @@ public static class OuyaInput
 		// this is solved by precompile makros
 		switch (playerController.mapType)
 		{
-#if !UNITY_EDITOR && UNITY_ANDROID
+#if !UNITY_EDITOR && ( UNITY_ANDROID || UNITY_WEBPLAYER )
 			case OuyaMapType.Generic_ANDROID:
 			// tested mapping for OuyaGameController connected to HTCOne
 			playerController.map_LX = string.Format("Joy{0} Axis 1", player); playerController.invert_LX = false;
@@ -773,7 +775,7 @@ public static class OuyaInput
 			break;
 #endif
 
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN	
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
 			case OuyaMapType.Ouya_WIN:   
 			// tested mapping for a OuyaGameController connected to Windows 7+8
 			playerController.map_LX = string.Format("Joy{0} Axis 1", player); playerController.invert_LX = false;		// checked
@@ -841,7 +843,7 @@ public static class OuyaInput
 			break;
 #endif
 
-#if UNITY_EDITOR || UNITY_STANDALONE_OSX
+#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_WEBPLAYER
 			case OuyaMapType.PS3_OSX:
 			// tested mapping for PS3 controller connected to MacOSX
 			playerController.map_LX = string.Format("Joy{0} Axis 1", player); playerController.invert_LX = false;		// checked
@@ -1074,7 +1076,7 @@ public static class OuyaInput
 				{
 					switch (mapType)
 					{
-#if !UNITY_EDITOR && UNITY_ANDROID
+#if !UNITY_EDITOR && ( UNITY_ANDROID || UNITY_WEBPLAYER )
 						case OuyaMapType.Generic_ANDROID:
 						case OuyaMapType.Broadcom_ANDROID:
 						case OuyaMapType.Ouya_CONSOLE:
@@ -1084,14 +1086,14 @@ public static class OuyaInput
 						else if (GetButton(OuyaButton.DR, player)) return 1f;
 						break;
 #endif
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
 						case OuyaMapType.Ouya_WIN:
 						case OuyaMapType.MotionInJoy_WIN:
 						if (GetButton(OuyaButton.DL, player)) return -1f;
 						else if (GetButton(OuyaButton.DR, player)) return 1f;
 						break;
 #endif
-#if UNITY_EDITOR || UNITY_STANDALONE_OSX
+#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_WEBPLAYER
 						case OuyaMapType.PS3_OSX:
 						case OuyaMapType.TattieBogle_OSX:
 						if (GetButton(OuyaButton.DL, player)) return -1f;
@@ -1107,7 +1109,7 @@ public static class OuyaInput
 				{
 					switch (mapType)
 					{		
-						#if !UNITY_EDITOR && UNITY_ANDROID
+						#if !UNITY_EDITOR && ( UNITY_ANDROID || UNITY_WEBPLAYER )
 						case OuyaMapType.Generic_ANDROID:
 						case OuyaMapType.Broadcom_ANDROID:
 						case OuyaMapType.Ouya_CONSOLE:
@@ -1117,14 +1119,14 @@ public static class OuyaInput
 						else if (GetButton(OuyaButton.DU, player)) return 1f;
 						break;
 						#endif
-						#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+						#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
 						case OuyaMapType.Ouya_WIN:
 						case OuyaMapType.MotionInJoy_WIN:
 						if (GetButton(OuyaButton.DD, player)) return -1f;
 						else if (GetButton(OuyaButton.DU, player)) return 1f;
 						break;
 						#endif
-						#if UNITY_EDITOR || UNITY_STANDALONE_OSX
+						#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_WEBPLAYER
 						case OuyaMapType.PS3_OSX:
 						case OuyaMapType.TattieBogle_OSX:
 						if (GetButton(OuyaButton.DD, player)) return -1f;
@@ -1252,7 +1254,7 @@ public static class OuyaInput
 			switch (mapType)
 			{				
 				/* ANDROID MAPPINGS */
-#if !UNITY_EDITOR && UNITY_ANDROID
+#if !UNITY_EDITOR && ( UNITY_ANDROID || UNITY_WEBPLAYER )
 				case OuyaMapType.Broadcom_ANDROID:
 				// tested mapping for: OuyaGameController connected to Nexus7
 				// connected via standard Bluetooth connection
@@ -1375,6 +1377,72 @@ public static class OuyaInput
 					default: return false;
 				}
 
+#if UNITY_4_3
+				// from http://forums.ouya.tv/discussion/comment/21469/#Comment_21469
+				// in Unity 4.3 on Ouya the mappings are all broken, so we have to switch the following mappings:
+				/*  Actual Button   Unity 4.3 / OuyaInput recognized button
+                    ---------------------------------------------------------------------
+                    LT (Left Trigger) L3 (Left stick click)
+                    RT (Right Trigger) R3 (Right stick click)
+                    A Button U Button
+                    Y Button A Button
+                    U Button Y Button
+                    L3 (Left stick click) DU-B (directional pad up)
+                    R3 (Right stick click) DD-B (directional pad down)
+                    DU-B (directional pad up) RT -1 on axis 
+                    DD-B (directional pad down) RT +1 on axis and RT-B
+                    DL-B (directional pad left) LT -1 on axis
+                    DR-B (directional pad right) LT +1 on axis
+                 */
+				 case OuyaMapType.Ouya_CONSOLE: 
+					// tested mapping for: OUYA console with native controller
+					// connected via standard Bluetooth
+					switch (button)
+					{
+						// ouya buttons
+					case OuyaButton.O: return GetButton(0, buttonAction, mapPlayer); // checked
+					case OuyaButton.U: return GetButton(2, buttonAction, mapPlayer); // checked
+					case OuyaButton.Y: return GetButton(3, buttonAction, mapPlayer); // checked
+					case OuyaButton.A: return GetButton(1, buttonAction, mapPlayer); // checked
+						
+						// shoulder buttons
+					case OuyaButton.LB: return GetButton(4, buttonAction, mapPlayer); // checked
+					case OuyaButton.RB: return GetButton(5, buttonAction, mapPlayer); // checked
+						
+						// stick buttons
+					case OuyaButton.L3: return GetButton(8, buttonAction, mapPlayer); // checked
+					case OuyaButton.R3: return GetButton(9, buttonAction, mapPlayer); // checked
+
+					/*
+						// d-pad buttons
+					case OuyaButton.DU: return !GetCachedButtonEvent(OuyaButton.RT, buttonAction, playerIndex); // checked
+					case OuyaButton.DD: return GetCachedButtonEvent(OuyaButton.RT, buttonAction, playerIndex); // checked
+					case OuyaButton.DL: return !GetCachedButtonEvent(OuyaButton.LT, buttonAction, playerIndex); // checked
+					case OuyaButton.DR: return GetCachedButtonEvent(OuyaButton.LT, buttonAction, playerIndex); // checked
+                    */
+
+					// d-pad buttons
+					// http://forums.ouya.tv/discussion/comment/21857/#Comment_21857
+					case OuyaButton.DU: return GetAxis (OuyaAxis.RT, player) < 0;; // checked
+					case OuyaButton.DD: return GetAxis (OuyaAxis.RT, player) > 0; // checked
+					case OuyaButton.DL: return GetAxis (OuyaAxis.LT, player) < 0; // checked
+					case OuyaButton.DR: return GetAxis (OuyaAxis.LT, player) > 0; // checked
+
+						// trigger buttons
+						// although button states are natively supported we use axis conversion
+						// this is because trigger buttons will natively only react on full pullthrough
+						// these buttons then are two axis and do not give out UP or DOWN events natively
+						// we use button state management and continious scanning to provide these                     
+					case OuyaButton.LT: return GetButton(6, buttonAction, mapPlayer);
+					case OuyaButton.RT: return GetButton(7, buttonAction, mapPlayer);
+						
+						// not defined so far â€“ or don't exist
+					case OuyaButton.START: return false;
+					case OuyaButton.SYSTEM: return false;
+					case OuyaButton.SELECT: return false;
+					default: return false;
+				}
+#else
 				case OuyaMapType.Ouya_CONSOLE:	
 				// tested mapping for: OUYA console with native controller
 				// connected via standard Bluetooth
@@ -1416,7 +1484,7 @@ public static class OuyaInput
 					case OuyaButton.SELECT: return false;	
 					default: return false;
 				}
-
+#endif
 				case OuyaMapType.XBOX360_ANDROID:
 				// tested mapping for: XBOX360 USB controller connnected to OUYA, Nexus7
 				// connected via USB cable (with USBToGo adapter cable for Nexus7)
@@ -1547,7 +1615,7 @@ public static class OuyaInput
 #endif
 
 				/* WINDOWS MAPPINGS */
-#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN || UNITY_WEBPLAYER
 				case OuyaMapType.Ouya_WIN:
 				// tested mapping for: OUYA Game Controller connected to Windows 7+8 64bit
 				// connection via standard Bluetooth (preinstalled OS drivers)
@@ -1753,7 +1821,7 @@ public static class OuyaInput
 #endif
 
 				/* MACOSX MAPPINGS */
-#if UNITY_EDITOR || UNITY_STANDALONE_OSX
+#if UNITY_EDITOR || UNITY_STANDALONE_OSX || UNITY_WEBPLAYER
 				case OuyaMapType.PS3_OSX:
 				// tested mapping for PS3 DS controller connected to the MacOSX
 				// connection via standard Bluetooth (prinstalled drivers)
